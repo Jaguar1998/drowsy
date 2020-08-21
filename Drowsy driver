@@ -1,0 +1,95 @@
+mov p1, #0ffh
+		
+		mov P3, #0ffh
+		
+  
+	clr p1.6
+clr p1.7	
+
+clr p1.5
+acall delay_1s
+
+
+	nex0: jb p1.0, nex0   ;start :p1.0-start, p1.1-stop,p1.2-alcohol,p1.3-sleep,p1.4-seat belt,
+;p1.7-alcohol buzzer, p1.6-motor, p1.5 - pin 1 of um3561
+
+
+		setb p1.6
+
+		
+	nex1:	jb p1.1, nex2
+
+		clr p1.6         ;stop
+			
+nex2:	jnb p1.2, nex3
+
+		acall alc
+			
+
+	nex3:	jb p1.3, nex4
+acall delay_1s
+jb p1.3, nex1
+acall delay_1s
+jb p1.3,nex1
+
+acall buzzer
+nex4: jnb p1.4,nex1
+acall alc
+	sjmp nex1
+
+
+
+alc: 
+				
+			setb p1.7         ;buzzer
+
+			acall delay	
+			acall delay		
+			
+			acall delay	
+			acall delay		
+			
+			
+			clr p1.7
+clr p1.6
+acall delay_1s
+
+			ret
+buzzer: setb p1.7         ;buzzer
+
+;setb p1.5			
+acall delay	
+			acall delay		
+			
+			
+			
+			
+			
+			clr p1.7
+clr p1.5
+acall delay_1s
+
+ret
+	
+	delay:
+			mov r0,#125d
+		l3:	mov r1, #60d
+		l2:	mov r2, #120d
+		l1:	djnz r2, l1
+			djnz r1, l2
+			djnz r0, l3
+			ret
+
+delay_1s:
+		using 2
+		mov r0, #202d
+	xa3:	mov r1, #118d
+	xa2:	mov r2, #7d
+	xa1:	djnz r2, xa1
+		djnz r1, xa2
+		djnz r0, xa3
+		using 0
+		ret
+
+	
+			end
